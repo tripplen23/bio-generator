@@ -33,6 +33,7 @@ import {
 import { Info } from "lucide-react";
 import { Textarea } from "../ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { generateBio } from "@/app/actions";
 
 const formSchema = z.object({
   model: z.string().min(1, "Model is required!"),
@@ -91,10 +92,28 @@ const UserInput = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
     console.log(values);
+
+    const userInputValues = `
+    User Input: ${values.content},
+    Bio Tone: ${values.tone},
+    Bio Type: ${values.type},
+    Add Emojis: ${values.emojis},
+    `;
+
+    try {
+      const { data } = await generateBio(
+        userInputValues,
+        values.temperature,
+        values.model
+      );
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   return (
@@ -331,6 +350,9 @@ const UserInput = () => {
               />
             </div>
 
+            {/* TODO: Posted PLatform */}
+
+            {/* TODO: emoji toggle */}
             <div className="grid gap-3">
               <FormField
                 control={form.control}
