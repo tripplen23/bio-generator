@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useContext } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -30,10 +30,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Info } from "lucide-react";
+import { Info, Loader2 } from "lucide-react";
 import { Textarea } from "../ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { generateBio } from "@/app/actions";
+import { BioContext } from "@/context/BioContext";
 
 const formSchema = z.object({
   model: z.string().min(1, "Model is required!"),
@@ -89,13 +90,17 @@ const UserInput = () => {
       type: "personal",
       tone: "professional",
       emojis: false,
+      // Platform: "LinkedIn",
     },
   });
+
+  const { setOutput, setLoading, loading } = useContext(BioContext);
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    console.log(values);
+    // console.log(values);
+    setLoading(true);
 
     const userInputValues = `
     User Input: ${values.content},
@@ -110,9 +115,12 @@ const UserInput = () => {
         values.temperature,
         values.model
       );
-      console.log(data);
+      //console.log(data);
+      setOutput(data);
+      setLoading(false);
     } catch (error) {
       console.log(error);
+      setLoading(false);
     }
   }
 
@@ -372,7 +380,8 @@ const UserInput = () => {
             </div>
           </fieldset>
 
-          <Button className="rounded" type="submit">
+          <Button className="rounded" type="submit" disabled={loading}>
+            {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
             Generate
           </Button>
         </form>
