@@ -84,12 +84,17 @@ const config = {
             "offset-distance": "100%",
           },
         },
+        grid: {
+          "0%": { transform: "translateY(-50%)" },
+          "100%": { transform: "translateY(0)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         gradient: "gradient 8s linear infinite",
         "border-beam": "border-beam calc(var(--duration)*1s) infinite linear",
+        grid: "grid 15s linear infinite",
       },
     },
   },

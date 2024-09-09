@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
+import { CoolMode } from "@/components/magicui/cool-mode";
 import {
   Form,
   FormControl,
@@ -795,11 +796,12 @@ const UserInput = () => {
               />
             </div>
           </fieldset>
-
-          <Button className="rounded" type="submit" disabled={loading}>
-            {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-            Generate
-          </Button>
+          <CoolMode>
+            <Button className="rounded" type="submit" disabled={loading}>
+              {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
+              Generate
+            </Button>
+          </CoolMode>
         </form>
       </Form>
     </div>
