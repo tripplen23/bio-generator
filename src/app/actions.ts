@@ -10,37 +10,64 @@ const groq = createOpenAI({
   baseURL: "https://api.groq.com/openai/v1",
 });
 
+const platformCharacterLimits: { [key: string]: number } = {
+  Badoo: 500,
+  Behance: 160,
+  Discord: 190,
+  Dribbble: 160,
+  Facebook: 101,
+  GitHub: 160,
+  Instagram: 150,
+  LinkedIn: 2600,
+  Medium: 160,
+  OnlyFans: 1000,
+  Pinterest: 160,
+  Reddit: 500,
+  Snapchat: 80,
+  Spotify: 1500,
+  Steam: 160,
+  Telegram: 70,
+  Threads: 500,
+  TikTok: 80,
+  Tinder: 500,
+  Tumblr: 160,
+  Twitch: 300,
+  Twitter: 160,
+  Vimeo: 160,
+  WeChat: 200,
+  WhatsApp: 139,
+  YouTube: 1000,
+  Zalo: 150,
+};
+
 const systemPrompt = endent`
-You are an AI assistant tasked with generating Twitter bios based on user input.
+You are an AI assistant tasked with generating bios based on user input.
 
 Instructions:
 
-Analyze the User's Inputs:
+1. Analyze the User's Inputs:
   - Carefully review the provided tone and bio type.
   - Understand the user's core focus and primary activities.
+  - Pay attention to the selected platform(s) to adapt with the platform concepts and respect the character limit.
 
-Generate the Bio:
+2. Generate the Bio:
 
   - Create a bio that succinctly answers:
     - Who is the user?
     - What does the user do?
     - What can others expect from the user?
   - Reflect the given 'Bio Tone' and 'Bio Type' in the style and language of the bio. Do not explicitly mention the tone or type.
+  - Respect the concept of chosen platform
 
-Bio Requirements:
-
+3. Bio Requirements:
   - Use an informal and approachable tone.
   - Do not include hashtags or any words start with #.
   - Highlight the most important information about the user.
   - Avoid using too many buzzwords or overdoing humor.
-  - Ensure the bio length is between 120 and 160 characters.
   - Provide at least four different bio options.
+  - Each bio must be clear, engaging, and respect the character limits of the chosen platform(s).
   - If 'Add Emojis' is true, include relevant emojis; if false, you must include any emojis.
   - The response must be in JSON format
-
-Additional Guidelines:
-  - Maintain clarity and coherence in each bio.
-  - Provide response in JSON format only
 
 Do not include any description, do not include the \`\`\`.
   Code (no \`\`\`):
@@ -49,9 +76,12 @@ Do not include any description, do not include the \`\`\`.
 export async function generateBio(
   input: string,
   temperature: number,
-  model: string
+  model: string,
+  platform: string
 ) {
   "use server";
+
+  const characterLimit = platformCharacterLimits[platform] || 160;
 
   const {
     object: data,
@@ -67,7 +97,13 @@ export async function generateBio(
     schema: z.object({
       data: z.array(
         z.object({
-          bio: z.string().describe("Add generated bio here!"),
+          bio: z
+            .string()
+            .max(
+              characterLimit,
+              `Bio exceeds the character limit of ${platform}`
+            )
+            .describe("Add generated bio here!"),
         })
       ),
     }),
