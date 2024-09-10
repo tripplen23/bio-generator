@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import GridPattern from "@/components/magicui/animated-grid-pattern";
 import { TooltipProvider } from "@radix-ui/react-tooltip";
 import RetroGrid from "@/components/magicui/retro-grid";
 
@@ -19,9 +18,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={cn(GeistSans.variable, "font-sans")}>
-        {/*<GridPattern width={60} height={60} className="-z-10 opacity-70" />*/}
-        <RetroGrid angle={60} className="-z-10 opacity-70" />
-
+        <RetroGrid angle={60} className="-z-10 opacity-60" />
         <TooltipProvider>{children}</TooltipProvider>
       </body>
     </html>
