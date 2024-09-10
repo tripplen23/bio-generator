@@ -73,7 +73,7 @@ const formSchema = z.object({
   content: z
     .string()
     .min(50, "Content should at least have 50 characters.")
-    .max(1000, "Content should not exceed 1000 character limit."),
+    .max(2600, "Content should not exceed 2600 character limit."),
   type: z.enum(["personal", "brand"], {
     errorMap: () => ({ message: "Type is required!" }),
   }),
